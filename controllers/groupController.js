@@ -12,7 +12,7 @@ exports.createGroup = async (req, res) => {
 }
 
 // Get all groups
-exports.getAllGroups = async (req,res) => {
+exports.getAllGroups = async (req, res) => {
     try {
         const groups = await Group.find().populate('members', 'name email');
         res.status(200).json({ message: "Groups fetched successfully", groups });
