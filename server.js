@@ -5,8 +5,19 @@ require('dotenv').config();
 
 const app = express();
 
+// Middleware
 app.use(cors());
 app.use(express.json());
+
+//Route Imports
+const userRoutes = require('./routes/userRoutes');
+const groupRoutes = require('./routes/groupRoutes');
+const expenseRoutes = require('./routes/expenseRoutes');
+
+//Mount routes
+app.use('/api/users', userRoutes); 
+app.use('/api/groups', groupRoutes);  
+app.use('/api/expenses', expenseRoutes); 
 
 app.get('/',(req,res)=>{
     res.send('Splitwise API is running');
