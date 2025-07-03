@@ -71,3 +71,77 @@ exports.getGroupBalance = async (req, res) => {
         res.status(400).json({ message: "Failed to calculate group balance", error: error.message });
     }
 }
+
+// Get settlement plan who needs to pay whom
+exports.getSettlementPlan = async (req, res) => {
+    try {
+        const groupId = req.params.groupId;
+        const expenses = await Expense.find({ group: groupId });
+        const balanceSheet = {};
+
+        for(const expense of expenses) {
+            const totalAmount = expense.amount;
+            const paidBy = expense.paidBy.toString();
+            const splitBetween = expense.splitBetween.map(id => id.toString());
+
+            const share = totalAmount / splitBetween.length;
+
+            if(!balanceSheet[paidBy]) {
+                balanceSheet[paidBy] = 0;
+            }
+            balanceSheet[paidBy] += totalAmount;
+
+            for(const userId of splitBetween) {
+                if(!balanceSheet[userId]) {
+                    balanceSheet[userId] = 0;
+                }
+                balanceSheet[userId] -= share;
+            }
+        }
+
+        const balances = Object.entries(balanceSheet).map(([userId, balance]) => ({
+            userId,
+            balance: Math.round(balance * 100) / 100 // Round to 2 decimal places
+        })).filter(entry => entry.balance !== 0);
+
+        const users = await User.find({ _id: { $in: balances.map(b => b.userId) } });
+        const idToName = {};
+        users.forEach(user => {
+            idToName[user._id.toString()] = user.name;
+        });
+        console.log("BalanceSheet:", balanceSheet);
+        const settlements = [];
+
+        const debters = balances.filter(b => b.balance < 0).sort((a, b) => a.balance - b.balance);
+        const creditors = balances.filter(b => b.balance > 0).sort((a, b) => b.balance - a.balance);
+        console.log("Debtors:", debters);
+        console.log("Creditors:", creditors);
+
+        let i=0, j=0;
+        while (i < debters.length && j < creditors.length) {
+            const debtor = debters[i];
+            const creditor = creditors[j];
+            
+            const settledAmount = Math.min(-debtor.balance, creditor.balance);
+            settlements.push({
+                from: idToName[debtor.userId],
+                to: idToName[creditor.userId],
+                amount: Math.round(settledAmount * 100) / 100 // Round to 2 decimal places
+            });
+
+            debtor.balance += settledAmount;
+            creditor.balance -= settledAmount;
+
+            if(Math.abs(debtor.balance) < 0.01) {
+                i++;
+            }
+            if(Math.abs(creditor.balance) < 0.01) {
+                j++;
+            }
+        }
+        res.status(200).json({ message: "Settlement plan calculated successfully", settlements });
+
+    } catch (error) {
+        res.status(400).json({ message: "Failed to get settlement plan", error: error.message });
+    }
+}
