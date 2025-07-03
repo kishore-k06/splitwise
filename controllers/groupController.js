@@ -42,8 +42,8 @@ exports.getGroupBalance = async (req, res) => {
             // Credit the person who paid
             if(!balanceSheet[paidBy]) {
                 balanceSheet[paidBy] = 0;
-                balanceSheet[paidBy] += totalAmount;
             }
+            balanceSheet[paidBy] += totalAmount;
 
             // Debit the people who split the expense
             for(const userId of splitBetween) {
