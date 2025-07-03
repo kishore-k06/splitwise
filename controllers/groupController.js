@@ -98,12 +98,13 @@ exports.getSettlementPlan = async (req, res) => {
                 balanceSheet[userId] -= share;
             }
         }
-
+        // Storing the KVP of balanceSheet in an array
         const balances = Object.entries(balanceSheet).map(([userId, balance]) => ({
             userId,
             balance: Math.round(balance * 100) / 100 // Round to 2 decimal places
         })).filter(entry => entry.balance !== 0);
 
+        // Find users from balanceSheet to get their names
         const users = await User.find({ _id: { $in: balances.map(b => b.userId) } });
         const idToName = {};
         users.forEach(user => {
@@ -112,14 +113,16 @@ exports.getSettlementPlan = async (req, res) => {
         console.log("BalanceSheet:", balanceSheet);
         const settlements = [];
 
-        const debters = balances.filter(b => b.balance < 0).sort((a, b) => a.balance - b.balance);
+        // Finding debtors and creditors and sorting them
+        const debtors = balances.filter(b => b.balance < 0).sort((a, b) => a.balance - b.balance);
         const creditors = balances.filter(b => b.balance > 0).sort((a, b) => b.balance - a.balance);
-        console.log("Debtors:", debters);
+        console.log("Debtors:", debtors);
         console.log("Creditors:", creditors);
 
+        // Settle debts between debtors and creditors using two pointers
         let i=0, j=0;
-        while (i < debters.length && j < creditors.length) {
-            const debtor = debters[i];
+        while (i < debtors.length && j < creditors.length) {
+            const debtor = debtors[i];
             const creditor = creditors[j];
             
             const settledAmount = Math.min(-debtor.balance, creditor.balance);
