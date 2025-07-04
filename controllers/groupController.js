@@ -5,18 +5,26 @@ const Expense = require('../models/Expense');
 // Create a new group
 exports.createGroup = async (req, res) => {
     try {
+        const userId = req.user.userId; // userId is set by authMiddleware
         const { name,members } = req.body;
-        const group = await Group.create({ name,members });
-        res.status(201).json({ message: "Group created successfully", group });
+        const newGroup = new Group({
+            name,
+            members: [...members, userId], // Add the creator to the members list
+            createdBy: userId
+        });
+        await newGroup.save();
+        res.status(201).json({ message: "Group created successfully", newGroup });
     } catch (error) {
         res.status(400).json({ message: "Group creation failed", error: error.message });
     }
 }
 
 // Get all groups
-exports.getAllGroups = async (req, res) => {
+exports.getMyGroups = async (req, res) => {
     try {
-        const groups = await Group.find().populate('members', 'name email');
+        const userId = req.user.userId; 
+
+        const groups = await Group.find({ members: userId }).populate('members', 'name email').populate('createdBy', 'name email');
         res.status(200).json({ message: "Groups fetched successfully", groups });
     } catch (error) {
         res.status(400).json({ message: "Failed to fetch groups", error: error.message });
@@ -27,6 +35,15 @@ exports.getAllGroups = async (req, res) => {
 exports.getGroupBalance = async (req, res) => {
     try {
         const groupId = req.params.id;
+        // Check if the user is a member of the group
+        const group = await Group.findById(groupId);
+        console.log("Group members:", group.members.map(id => id.toString()));
+        console.log("Requesting user:", req.user.userId);
+
+        if (!group.members.map(id => id.toString()).includes(req.user.userId)) {
+            return res.status(403).json({ message: "Access denied to this group" });
+        }
+
         const expenses = await Expense.find({ group: groupId });
 
         const balanceSheet = {}; // Like C++ map<string, double>
@@ -76,6 +93,12 @@ exports.getGroupBalance = async (req, res) => {
 exports.getSettlementPlan = async (req, res) => {
     try {
         const groupId = req.params.groupId;
+
+        const group = await Group.findById(groupId);
+        if (!group.members.includes(req.user.userId)) {
+            return res.status(403).json({ message: "Access denied to this group" });
+        }
+
         const expenses = await Expense.find({ group: groupId });
         const balanceSheet = {};
 
