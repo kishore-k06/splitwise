@@ -10,11 +10,13 @@ app.use(cors());
 app.use(express.json());
 
 //Route Imports
+const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const groupRoutes = require('./routes/groupRoutes');
 const expenseRoutes = require('./routes/expenseRoutes');
 
 //Mount routes
+app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes); 
 app.use('/api/groups', groupRoutes);  
 app.use('/api/expenses', expenseRoutes); 
