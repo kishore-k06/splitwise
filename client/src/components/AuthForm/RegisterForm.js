@@ -24,14 +24,14 @@ const RegisterForm = () => {
             if (response.ok) {
                 localStorage.setItem('token', data.token);
                 setToken(data.token);
-                navigate('/groups'); // Redirect to groups page after login
+                navigate('/login'); // Redirect to login page after registration
             }
             else {
-                console.error('Login failed:', data.message);
+                console.error('Registration failed:', data.message);
                 alert(data.message); // Show error message to user
             }
         } catch (error) {
-            console.error('Error logging in:', error);
+            console.error('Error registering:', error);
         }
     }
 
