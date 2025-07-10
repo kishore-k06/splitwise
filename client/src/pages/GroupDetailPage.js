@@ -5,7 +5,7 @@ import { AuthContext } from "../context/AuthContext";
 const GroupDetailPage = () => {
     const { token } = useContext(AuthContext);
     const { groupId } = useParams();
-    console.log("Group ID:", groupId);
+    
     const [groupExpenses, setGroupExpenses] = useState([]);
     const [groupBalances, setGroupBalances] = useState([]);
     const [settlements, setGroupSettlements] = useState([]);
@@ -17,21 +17,18 @@ const GroupDetailPage = () => {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const data1 = await res1.json();
-                console.log("Group Expenses Response:", data1);
                 setGroupExpenses(data1.expenses);
 
                 const res2 = await fetch(`http://localhost:5000/api/groups/${groupId}/balance`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const data2 = await res2.json();
-                console.log("Group Balances Response:", data2);
                 setGroupBalances(data2.balance);
 
                 const res3 = await fetch(`http://localhost:5000/api/groups/${groupId}/settlements`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const data3 = await res3.json();
-                console.log("Group Settlements Response:", data3);
                 setGroupSettlements(data3.settlements);
             } catch (error) {
                 console.error("Error fetching group details:", error);
