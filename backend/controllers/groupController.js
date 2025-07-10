@@ -31,6 +31,34 @@ exports.getMyGroups = async (req, res) => {
     }
 }
 
+// Get members of a group
+exports.getGroupMembers = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const group = await Group.findById(id).populate('members', 'name email');
+        if (!group) {
+            return res.status(404).json({ message: 'Group not found' });
+        }
+        res.status(200).json({ members: group.members });
+    } catch (error) {
+        res.status(400).json({ message: 'Failed to fetch group members', error: error.message });
+    }
+};
+
+
+// Get group by ID
+exports.getGroupById = async (req, res) => {
+  try {
+    const group = await Group.findById(req.params.id).populate('members', 'name');
+    if (!group) {
+      return res.status(404).json({ message: 'Group not found' });
+    }
+    res.status(200).json(group);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch group', error: error.message });
+  }
+};
+
 // Balance Calculation
 exports.getGroupBalance = async (req, res) => {
     try {
