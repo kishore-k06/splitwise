@@ -19,8 +19,8 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/" element={<HomePage />} />
           <Route path="/groups" element={<GroupListPage />} />
-        <Route path="/groups/:id" element={<GroupDetailPage />} />
-        <Route path="/add-expense" element={<AddExpensePage />} />
+          <Route path="/groups/:groupId" element={<GroupDetailPage />} />
+          <Route path="/add-expense" element={<AddExpensePage />} />
         </Routes>
       </Router>
     </AuthProvider>
