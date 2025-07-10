@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 
 const GroupListPage = () => {
     const { token } = useContext(AuthContext);
     const [groups, setGroups] = useState([]);
     const [loading, setLoading] = useState(true);
-    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchGroups = async () => {
@@ -30,10 +29,6 @@ const GroupListPage = () => {
         fetchGroups();
     }, [token]);
 
-    const handleGroupClick = (groupId) => {
-        navigate(`/groups/${groupId}`);
-    };
-
     return (
         <div>
             <h2>Your Groups</h2>
@@ -44,11 +39,9 @@ const GroupListPage = () => {
             ) : (
                 <ul>
                     {groups.map(group => (
-                        <li key={group.id}>
-                            <h3>{group.name}</h3>
-                            <p>Members: {group.members.map(m => m.name).join(', ')}</p>
-                            <button onClick={() => handleGroupClick(group.id)}>View Group</button>
-                        </li>
+                        <div key={group._id}>
+                            <Link to={`/groups/${group._id}`}>{group.name} - View Group</Link>
+                        </div>
                     ))}
                 </ul>
             )}
