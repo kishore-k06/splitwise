@@ -10,32 +10,59 @@ const GroupDetailPage = () => {
     const [groupBalances, setGroupBalances] = useState([]);
     const [settlements, setGroupSettlements] = useState([]);
 
+    const fetchGroupDetails = async () => {
+        try {
+            const res1 = await fetch(`http://localhost:5000/api/expenses/${groupId}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const data1 = await res1.json();
+            setGroupExpenses(data1.expenses);
+
+            const res2 = await fetch(`http://localhost:5000/api/groups/${groupId}/balance`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const data2 = await res2.json();
+            setGroupBalances(data2.balance);
+
+            const res3 = await fetch(`http://localhost:5000/api/groups/${groupId}/settlements`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const data3 = await res3.json();
+            setGroupSettlements(data3.settlements);
+        } catch (error) {
+            console.error("Error fetching group details:", error);
+        }
+    };
     useEffect(() => {
-        const fetchGroupDetails = async () => {
-            try {
-                const res1 = await fetch(`http://localhost:5000/api/expenses/${groupId}`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const data1 = await res1.json();
-                setGroupExpenses(data1.expenses);
+        if (groupId) {
+            fetchGroupDetails();
+        }
+    });
 
-                const res2 = await fetch(`http://localhost:5000/api/groups/${groupId}/balance`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const data2 = await res2.json();
-                setGroupBalances(data2.balance);
+    const handleDelete = async (expenseId) => {
+        if (!window.confirm("Are you sure you want to delete this expense?")) return;
 
-                const res3 = await fetch(`http://localhost:5000/api/groups/${groupId}/settlements`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const data3 = await res3.json();
-                setGroupSettlements(data3.settlements);
-            } catch (error) {
-                console.error("Error fetching group details:", error);
+        try {
+            const res = await fetch(`http://localhost:5000/api/expenses/${expenseId}`, {
+            method: 'DELETE',
+            headers: {
+                Authorization: `Bearer ${token}`
             }
+            });
+
+            const data = await res.json();
+            if (res.ok) {
+            alert("Expense deleted");
+            // Re-fetch group expenses after delete
+            await fetchGroupDetails();
+            } else {
+            alert(`Failed to delete: ${data.message}`);
+            }
+        } catch (err) {
+            console.error("Delete error", err);
+        }
         };
-        fetchGroupDetails();
-    }, [groupId, token]);
+
 
     return (
         <div>
@@ -48,6 +75,7 @@ const GroupDetailPage = () => {
                     {groupExpenses.map(exp => (
                         <li key={exp._id}>
                             <strong>{exp.description}</strong> - ₹{exp.amount} paid by {exp.paidBy.name}
+                            <button onClick={() => handleDelete(exp._id)}>Delete</button>
                         </li>
                     ))}
                 </ul>
