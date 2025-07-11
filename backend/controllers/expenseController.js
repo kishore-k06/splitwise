@@ -5,12 +5,12 @@ const Group = require('../models/Group');
 exports.addExpense = async (req, res) => {
     try {
         const userId = req.user.userId; // userId is set by authMiddleware; 
-        const { group, description, amount, paidBy, splitBetween } = req.body;
-        const groupData = await Group.findById(group);
+        const { groupId, description, amount, paidBy, splitBetween } = req.body;
+        const groupData = await Group.findById(groupId);
         if (!groupData || !groupData.members.map(id => id.toString()).includes(userId)) {
             return res.status(403).json({ message: "Access denied. You are not a member of this group." });
         }
-        const expense = await Expense.create({ group, description, amount, paidBy: userId, splitBetween }); 
+        const expense = await Expense.create({ group: groupId, description, amount, paidBy, splitBetween }); 
         res.status(201).json({ message: "Expense created successfully", expense });
     } catch (error) {
         res.status(400).json({ message:"Expense creation failed", error: error.message });
