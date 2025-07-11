@@ -10,6 +10,7 @@ const AddExpensePage = () => {
   const [amount, setAmount] = useState("");
   const [members, setMembers] = useState([]);
   const [paidBy, setPaidBy] = useState("");
+  const [splitBetween, setSplitBetween] = useState([]);
 
   // Fetch all groups
   useEffect(() => {
@@ -62,6 +63,7 @@ const AddExpensePage = () => {
           description,
           amount: parseFloat(amount),
           paidBy,
+          splitBetween,
         }),
       });
 
@@ -72,6 +74,7 @@ const AddExpensePage = () => {
         setAmount("");
         setPaidBy("");
         setSelectedGroupId("");
+        setSplitBetween([]);
       } else {
         alert(`Failed to add expense: ${data.message}`);
       }
@@ -128,9 +131,33 @@ const AddExpensePage = () => {
           </select>
         </div>
 
-        <button type="submit">Add Expense</button>
-      </form>
-    </div>
+        <div>
+          <label>Split Between:</label>
+          {members.map((member) => (
+            <div key={member._id}>
+              <label>
+                <input
+                  type="checkbox"
+                  value={member._id}
+                  checked={splitBetween.includes(member._id)}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setSplitBetween((prev) => [...prev, member._id]);
+                    } else {
+                      setSplitBetween((prev) => prev.filter((id) => id !== member._id));
+                    }
+                  }}
+                />
+                {member.name}
+              </label>
+            </div>
+          ))}
+        </div>
+
+
+      <button type="submit">Add Expense</button>
+    </form>
+  </div>
   );
 };
 
