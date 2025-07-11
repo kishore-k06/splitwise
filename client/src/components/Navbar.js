@@ -17,6 +17,7 @@ const Navbar = () => {
             <Link to='/'>Home</Link>
             { token ? (
                 <>
+                    <Link to='/groups/create'>Create Group</Link>
                     <Link to='/groups'>Groups</Link>
                     <Link to='/add-expense'>Add Expense</Link>
                     <button onClick={handleLogout}>Logout</button>

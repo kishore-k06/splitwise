@@ -7,9 +7,21 @@ exports.createGroup = async (req, res) => {
     try {
         const userId = req.user.userId; // userId is set by authMiddleware
         const { name,members } = req.body;
+        const users = await User.find({ email: { $in: members } }); // Find users by email
+        
+        // Check if all provided emails correspond to valid users
+        if (users.length !== members.length) {
+            return res.status(400).json({ message: "Please ensure that the email addresses are valid." });
+        }
+
+        const memberIds = users.map(user => user._id.toString());
+        // Ensure the creator is also a member of the group
+        if (!memberIds.includes(userId)) {
+            memberIds.push(userId);
+        }
         const newGroup = new Group({
             name,
-            members: [...members, userId], // Add the creator to the members list
+            members: memberIds,
             createdBy: userId
         });
         await newGroup.save();
