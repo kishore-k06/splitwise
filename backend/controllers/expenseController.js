@@ -35,3 +35,31 @@ exports.getGroupExpenses = async (req, res) => {
         res.status(400).json({ message: "Failed to fetch expenses", error: error.message });
     }
 }
+
+// Delete an expense by ID
+exports.deleteExpense = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const { expenseId } = req.params;
+
+        const expense = await Expense.findById(expenseId);
+        if(!expense) {
+            return res.status(404).json({ message: "Expense not found" });
+        }
+
+        const group = await Group.findById(expense.group);
+        if(!group) {
+            return res.status(404).json({ message: "Group not found" });
+        }
+
+        const isMember = group.members.map(id => id.toString()).includes(userId);
+        if(!isMember) {
+            return res.status(403).json({ message: "Access denied. You are not a member of this group." });
+        }
+
+        await Expense.findByIdAndDelete(expenseId);
+        res.status(200).json({ message: "Expense deleted successfully" });
+    } catch (error) {
+        res.status(400).json({ message: "Failed to delete expense", error: error.message });
+    }
+};
