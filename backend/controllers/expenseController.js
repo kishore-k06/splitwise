@@ -47,14 +47,8 @@ exports.deleteExpense = async (req, res) => {
             return res.status(404).json({ message: "Expense not found" });
         }
 
-        const group = await Group.findById(expense.group);
-        if(!group) {
-            return res.status(404).json({ message: "Group not found" });
-        }
-
-        const isMember = group.members.map(id => id.toString()).includes(userId);
-        if(!isMember) {
-            return res.status(403).json({ message: "Access denied. You are not a member of this group." });
+        if (expense.paidBy.toString() !== userId) {
+            return res.status(403).json({ message: "You are not allowed to delete this expense" });
         }
 
         await Expense.findByIdAndDelete(expenseId);
