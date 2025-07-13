@@ -65,50 +65,81 @@ const GroupDetailPage = () => {
 
 
     return (
-        <div>
-            <h2>Group Details</h2>
-            <h3>Expenses</h3>
-            {!groupExpenses || groupExpenses.length === 0 ? (
-                <p>No Expenses yet</p>
-            ) : (
-                <ul>
-                    {groupExpenses.map(exp => (
-                        <li key={exp._id}>
-                            <strong>{exp.description}</strong> - ₹{exp.amount} paid by {exp.paidBy.name}
-                            <button onClick={() => handleDelete(exp._id)}>Delete</button>
-                        </li>
-                    ))}
-                </ul>
-            )}
+    <div className="container mt-5 text-light">
+      <h2 className="text-success mb-4">Group Details</h2>
 
-            <h3>Group Balance</h3>
-            {!groupBalances || groupBalances.length === 0 ? (
-                <p>No Balances yet</p>
-            ) : (
-                <ul>
-                    {groupBalances.map(b => (
-                        <li key={b.user.id}>
-                            {b.user.name}: ₹{b.balance.toFixed(2)}
-                        </li>
-                    ))}
-                </ul>
-            )}
-
-            <h3>Settlement Plan</h3>
-            {!settlements || settlements.length === 0 ? (
-                <p>No Settlements yet</p>
-            ) : (
-                <ul>
-                    {settlements.map((s, index) => (
-                        <li key={index}>
-                            {s.from} pays ₹{s.amount.toFixed(2)} to {s.to}
-                        </li>
-                    ))}
-                </ul>
-            )}
-
+      {/* Expenses */}
+      <div className="card bg-dark border-secondary mb-4">
+        <div className="card-header text-success">Expenses</div>
+        <div className="card-body">
+          {groupExpenses.length === 0 ? (
+            <p className="text-muted">No Expenses yet</p>
+          ) : (
+            <ul className="list-group">
+              {groupExpenses.map((exp) => (
+                <li
+                  key={exp._id}
+                  className="list-group-item d-flex justify-content-between align-items-center bg-dark text-light border-secondary"
+                >
+                  <div>
+                    <strong>{exp.description}</strong> - ₹{exp.amount} paid by{" "}
+                    <span className="text-info">{exp.paidBy.name}</span>
+                  </div>
+                  <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(exp._id)}>
+                    Delete
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
-    )
+      </div>
+
+      {/* Group Balance */}
+      <div className="card bg-dark border-secondary mb-4">
+        <div className="card-header text-success">Group Balances</div>
+        <div className="card-body">
+          {groupBalances.length === 0 ? (
+            <p className="text-muted">No Balances yet</p>
+          ) : (
+            <ul className="list-group">
+              {groupBalances.map((b) => (
+                <li
+                  key={b.user.id}
+                  className="list-group-item bg-dark text-light border-secondary"
+                >
+                  {b.user.name}: ₹{b.balance.toFixed(2)}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
+
+      {/* Settlements */}
+      <div className="card bg-dark border-secondary mb-4">
+        <div className="card-header text-success">Settlement Plan</div>
+        <div className="card-body">
+          {settlements.length === 0 ? (
+            <p className="text-muted">No Settlements yet</p>
+          ) : (
+            <ul className="list-group">
+              {settlements.map((s, index) => (
+                <li
+                  key={index}
+                  className="list-group-item bg-dark text-light border-secondary"
+                >
+                  <span className="text-warning">{s.from}</span> pays ₹
+                  {s.amount.toFixed(2)} to{" "}
+                  <span className="text-success">{s.to}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default GroupDetailPage;
