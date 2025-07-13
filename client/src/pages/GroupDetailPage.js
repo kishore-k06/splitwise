@@ -73,7 +73,7 @@ const GroupDetailPage = () => {
         <div className="card-header text-success">Expenses</div>
         <div className="card-body">
           {groupExpenses.length === 0 ? (
-            <p className="text-muted">No Expenses yet</p>
+            <p className="text-light">No Expenses yet</p>
           ) : (
             <ul className="list-group">
               {groupExpenses.map((exp) => (
@@ -100,7 +100,7 @@ const GroupDetailPage = () => {
         <div className="card-header text-success">Group Balances</div>
         <div className="card-body">
           {groupBalances.length === 0 ? (
-            <p className="text-muted">No Balances yet</p>
+            <p className="text-light">No Balances yet</p>
           ) : (
             <ul className="list-group">
               {groupBalances.map((b) => (
@@ -121,7 +121,7 @@ const GroupDetailPage = () => {
         <div className="card-header text-success">Settlement Plan</div>
         <div className="card-body">
           {settlements.length === 0 ? (
-            <p className="text-muted">No Settlements yet</p>
+            <p className="text-light">No Settlements yet</p>
           ) : (
             <ul className="list-group">
               {settlements.map((s, index) => (
