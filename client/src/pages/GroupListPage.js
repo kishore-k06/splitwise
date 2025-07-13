@@ -30,23 +30,34 @@ const GroupListPage = () => {
     }, [token]);
 
     return (
-        <div>
-            <h2>Your Groups</h2>
+        <div className="container mt-5 text-light">
+            <h2 className="text-success mb-4">Your Groups</h2>
+
             {loading ? (
-                <p>Loading...</p>
+                <div className="text-secondary">Loading...</div>
             ) : groups.length === 0 ? (
-                <p>No Groups Found.</p>
+                <div className="alert alert-warning">No groups found. Create one to get started!</div>
             ) : (
-                <ul>
+                <div className="row">
                     {groups.map(group => (
-                        <div key={group._id}>
-                            <Link to={`/groups/${group._id}`}>{group.name} - View Group</Link>
+                        <div key={group._id} className="col-md-6 mb-4">
+                            <div className="card bg-dark border-secondary shadow-sm h-100">
+                                <div className="card-body">
+                                    <h5 className="card-title text-success">{group.name}</h5>
+                                    <p className="card-text text-light">
+                                        Created on: {new Date(group.createdAt).toLocaleDateString()}
+                                    </p>
+                                    <Link to={`/groups/${group._id}`} className="btn btn-outline-success">
+                                        View Group
+                                    </Link>
+                                </div>
+                            </div>
                         </div>
                     ))}
-                </ul>
+                </div>
             )}
         </div>
-    )
+    );
 }
 
 export default GroupListPage;
