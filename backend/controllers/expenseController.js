@@ -57,3 +57,29 @@ exports.deleteExpense = async (req, res) => {
         res.status(400).json({ message: "Failed to delete expense", error: error.message });
     }
 };
+
+// Add a comment to an expense
+exports.addComment = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { expenseId } = req.params;
+    const { text } = req.body;
+
+    const expense = await Expense.findById(expenseId);
+    if (!expense) {
+      return res.status(404).json({ message: "Expense not found" });
+    }
+
+    expense.comments.push({
+      text,
+      user: userId
+    });
+
+    await expense.save();
+    const populated = await Expense.findById(expenseId).populate("comments.user", "name");
+
+    res.status(200).json({ message: "Comment added", comments: populated.comments });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to add comment", error: error.message });
+  }
+};
