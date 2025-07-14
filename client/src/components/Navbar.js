@@ -13,7 +13,9 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-4">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-4" style={{
+        background: "linear-gradient(90deg, #1c1f2b, #2a2f40)",
+      }}>
       <Link className="navbar-brand text-success fw-bold" to="/">
         Splitwise
       </Link>
