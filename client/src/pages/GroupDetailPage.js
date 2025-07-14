@@ -4,11 +4,15 @@ import { AuthContext } from "../context/AuthContext";
 
 const GroupDetailPage = () => {
     const { token } = useContext(AuthContext);
-    const { groupId } = useParams();
+    const { groupId, expenseId } = useParams();
     
     const [groupExpenses, setGroupExpenses] = useState([]);
     const [groupBalances, setGroupBalances] = useState([]);
     const [settlements, setGroupSettlements] = useState([]);
+
+    const [commentText, setCommentText] = useState("");
+    const [comments, setComments] = useState([]);
+
 
     const fetchGroupDetails = async () => {
         try {
@@ -33,11 +37,51 @@ const GroupDetailPage = () => {
             console.error("Error fetching group details:", error);
         }
     };
+    const fetchComments = async () => {
+      try {
+        const res = await fetch(`http://localhost:5000/api/expenses/${expenseId}/comments`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        if (res.ok) setComments(data.comments);
+        else console.error(data.message);
+      } catch (err) {
+        console.error("Failed to fetch comments", err);
+      }
+    };
+
+  const handleAddComment = async (e) => {
+    e.preventDefault();
+    if (!commentText.trim()) return;
+
+    try {
+      const res = await fetch(`http://localhost:5000/api/expenses/${expenseId}/comments`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ text: commentText }),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        setComments(data.comments); // Updated list
+        setCommentText("");
+      } else {
+        alert(data.message);
+      }
+    } catch (err) {
+      console.error("Failed to add comment", err);
+    }
+  };
+
     useEffect(() => {
         if (groupId) {
-            fetchGroupDetails();
+          fetchGroupDetails();
+          fetchComments();
         }
-    });
+    }, [groupId]);
 
     const handleDelete = async (expenseId) => {
         if (!window.confirm("Are you sure you want to delete this expense?")) return;
@@ -136,6 +180,46 @@ const GroupDetailPage = () => {
               ))}
             </ul>
           )}
+        </div>
+      </div>
+
+      {/* Group Comments */}
+      <div className="card bg-dark border-secondary mb-5">
+        <div className="card-header text-success">Group Comments</div>
+        <div className="card-body">
+          {comments.length === 0 ? (
+            <p className="text-muted">No comments yet.</p>
+          ) : (
+            <ul className="list-group mb-3">
+              {comments.map((c, idx) => (
+                <li
+                  key={idx}
+                  className="list-group-item bg-dark text-light border-secondary"
+                >
+                  <div>
+                    <strong className="text-info">{c.user.name}:</strong> {c.text}
+                  </div>
+                  <small className="text-muted">
+                    {new Date(c.createdAt).toLocaleString()}
+                  </small>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {/* Comment Input */}
+          <form className="d-flex" onSubmit={handleAddComment}>
+            <input
+              type="text"
+              className="form-control bg-dark text-light border-secondary me-2"
+              placeholder="Write a comment (e.g., Paid via GPay)"
+              value={commentText}
+              onChange={(e) => setCommentText(e.target.value)}
+            />
+            <button type="submit" className="btn btn-success">
+              Post
+            </button>
+          </form>
         </div>
       </div>
     </div>
