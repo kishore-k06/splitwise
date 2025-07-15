@@ -8,11 +8,21 @@ const RegisterForm = () => {
   const { setToken } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  const validatePassword = (password) => {
+  const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/;
+  return regex.test(password);
+  };
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
+    if(!validatePassword(formData.password)) {
+      window.alert('Password must be at least 8 characters long and contain at least one uppercase letter, one number, and one special character.');
+      return;
+    }
+
     e.preventDefault();
     try {
       const response = await fetch('http://localhost:5000/api/auth/register', {
