@@ -2,7 +2,6 @@ import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
-require('dotenv').config()
 
 const RegisterForm = () => {
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });

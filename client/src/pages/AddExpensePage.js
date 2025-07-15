@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { toast } from "react-toastify";
-require('dotenv').config();
 
 const AddExpensePage = () => {
   const { token } = useContext(AuthContext);

@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { toast } from "react-toastify";
-require('dotenv').config()
 
 const GroupDetailPage = () => {
   const { token } = useContext(AuthContext);
