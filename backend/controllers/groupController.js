@@ -71,6 +71,27 @@ exports.getGroupById = async (req, res) => {
   }
 };
 
+// Delete a group by ID
+exports.deleteGroup = async (req,res) => {
+    try {
+        const userId = req.user.userId;
+        const { groupId } = req.params;
+
+        const group = await Group.findById(groupId);
+        if(!group) {
+            return res.status(404).json({ message: "Group not found" });
+        }
+
+        if (group.createdBy.toString() !== userId) {
+            return res.status(403).json({ message: "You are not allowed to delete this group" });
+        }
+        await Group.findByIdAndDelete(groupId);
+        res.status(200).json({ message: "Group deleted successfully" });
+    } catch (error) {
+        res.status(400).json({ message: "Failed to delete group", error: error.message });
+    }
+};
+
 // Balance Calculation
 exports.getGroupBalance = async (req, res) => {
     try {
