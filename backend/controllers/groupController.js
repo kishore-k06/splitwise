@@ -98,8 +98,8 @@ exports.getGroupBalance = async (req, res) => {
         const groupId = req.params.id;
         // Check if the user is a member of the group
         const group = await Group.findById(groupId);
-        console.log("Group members:", group.members.map(id => id.toString()));
-        console.log("Requesting user:", req.user.userId);
+       // console.log("Group members:", group.members.map(id => id.toString()));
+       // console.log("Requesting user:", req.user.userId);
 
         if (!group.members.map(id => id.toString()).includes(req.user.userId)) {
             return res.status(403).json({ message: "Access denied to this group" });
@@ -194,14 +194,14 @@ exports.getSettlementPlan = async (req, res) => {
         users.forEach(user => {
             idToName[user._id.toString()] = user.name;
         });
-        console.log("BalanceSheet:", balanceSheet);
+        // console.log("BalanceSheet:", balanceSheet);
         const settlements = [];
 
         // Finding debtors and creditors and sorting them
         const debtors = balances.filter(b => b.balance < 0).sort((a, b) => a.balance - b.balance);
         const creditors = balances.filter(b => b.balance > 0).sort((a, b) => b.balance - a.balance);
-        console.log("Debtors:", debtors);
-        console.log("Creditors:", creditors);
+        // console.log("Debtors:", debtors);
+        // console.log("Creditors:", creditors);
 
         // Settle debts between debtors and creditors using two pointers
         let i=0, j=0;

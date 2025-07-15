@@ -39,7 +39,7 @@ const AddExpensePage = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
-        console.log("Fetched Members:", data.members);
+        // console.log("Fetched Members:", data.members);
         setMembers(data.members || []);
       } catch (error) {
         console.error("Failed to fetch members", error);
