@@ -8,6 +8,15 @@ const RegisterForm = () => {
   const { setToken } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  const checkRules = (password) => ({
+    length: password.length >= 8,
+    uppercase: /[A-Z]/.test(password),
+    digit: /\d/.test(password),
+    special: /[!@#$%^&*(),.?":{}|<>]/.test(password),
+  });
+
+  const rules = checkRules(formData.password);
+
   const validatePassword = (password) => {
   const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/;
   return regex.test(password);
@@ -83,6 +92,22 @@ const RegisterForm = () => {
           onChange={handleChange}
           required
         />
+        <br></br>
+        <p className="mt-2 mb-1 fw-semibold text-light">Password must follow these rules:</p>
+        <ul className="mt-2 list-unstyled">
+          <li className={`text-${rules.length ? 'success' : 'danger'}`}>
+            {rules.length ? '✔' : '✖'} At least 8 characters
+          </li>
+          <li className={`text-${rules.uppercase ? 'success' : 'danger'}`}>
+            {rules.uppercase ? '✔' : '✖'} At least one uppercase letter
+          </li>
+          <li className={`text-${rules.digit ? 'success' : 'danger'}`}>
+            {rules.digit ? '✔' : '✖'} At least one number
+          </li>
+          <li className={`text-${rules.special ? 'success' : 'danger'}`}>
+            {rules.special ? '✔' : '✖'} At least one special character
+          </li>
+        </ul>
       </div>
 
       <button type="submit" className="btn btn-success w-100">
