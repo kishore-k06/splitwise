@@ -28,6 +28,13 @@
   color: #61dafb;
 }
 
+.custom-hover:hover {
+  background-color: #661010; /* Dark red background on hover */
+  color: #ffffff;            /* White text on hover */
+  transition: background-color 0.2s ease;
+}
+
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
