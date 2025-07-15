@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+require('dotenv').config()
 
 const CreateGroupPage = () => {
   const { token } = useContext(AuthContext);
@@ -30,7 +31,7 @@ const CreateGroupPage = () => {
     }
 
     try {
-      const res = await fetch("http://localhost:5000/api/groups/create", {
+      const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/groups/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

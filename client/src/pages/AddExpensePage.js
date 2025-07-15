@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { toast } from "react-toastify";
+require('dotenv').config();
 
 const AddExpensePage = () => {
   const { token } = useContext(AuthContext);
@@ -17,7 +18,7 @@ const AddExpensePage = () => {
   useEffect(() => {
     const fetchGroups = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/groups", {
+        const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/groups`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -35,7 +36,7 @@ const AddExpensePage = () => {
     const fetchMembers = async () => {
       if (!selectedGroupId) return;
       try {
-        const res = await fetch(`http://localhost:5000/api/groups/${selectedGroupId}/members`, {
+        const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/groups/${selectedGroupId}/members`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -53,7 +54,7 @@ const AddExpensePage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("http://localhost:5000/api/expenses/add", {
+      const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/expenses/add`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

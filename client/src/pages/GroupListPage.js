@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { toast } from 'react-toastify';
+require('dotenv').config()
 
 const GroupListPage = () => {
     const { token } = useContext(AuthContext);
@@ -12,7 +13,7 @@ const GroupListPage = () => {
     useEffect(() => {
         const fetchGroups = async () => {
             try {
-                const response = await fetch('http://localhost:5000/api/groups', {
+                const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/groups`, {
                     headers: { 'Authorization': `Bearer ${token}` },
                 });
                 const data = await response.json();
@@ -35,7 +36,7 @@ const GroupListPage = () => {
         if (!window.confirm("Are you sure you want to delete this group?")) return;
 
         try {
-            const res = await fetch(`http://localhost:5000/api/groups/${groupId}/delete`, {
+            const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/groups/${groupId}/delete`, {
                 method: "DELETE",
                 headers: { Authorization: `Bearer ${token}` },
             });

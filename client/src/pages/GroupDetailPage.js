@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { toast } from "react-toastify";
+require('dotenv').config()
 
 const GroupDetailPage = () => {
   const { token } = useContext(AuthContext);
@@ -16,19 +17,19 @@ const GroupDetailPage = () => {
 
   const fetchGroupDetails = useCallback(async () => {
     try {
-      const res1 = await fetch(`http://localhost:5000/api/expenses/${groupId}`, {
+      const res1 = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/expenses/${groupId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data1 = await res1.json();
       setGroupExpenses(data1.expenses);
 
-      const res2 = await fetch(`http://localhost:5000/api/groups/${groupId}/balance`, {
+      const res2 = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/groups/${groupId}/balance`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data2 = await res2.json();
       setGroupBalances(data2.balance);
 
-      const res3 = await fetch(`http://localhost:5000/api/groups/${groupId}/settlements`, {
+      const res3 = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/groups/${groupId}/settlements`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data3 = await res3.json();
@@ -48,7 +49,7 @@ const GroupDetailPage = () => {
     if (!window.confirm("Are you sure you want to delete this expense?")) return;
 
     try {
-      const res = await fetch(`http://localhost:5000/api/expenses/${expenseId}`, {
+      const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/expenses/${expenseId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -75,7 +76,7 @@ const GroupDetailPage = () => {
     if (!commentText?.trim()) return;
 
     try {
-      const res = await fetch(`http://localhost:5000/api/expenses/${expenseId}/comments`, {
+      const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/expenses/${expenseId}/comments`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
