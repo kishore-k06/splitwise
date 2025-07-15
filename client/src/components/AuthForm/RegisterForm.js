@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
+import { toast } from 'react-toastify';
 
 const RegisterForm = () => {
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
@@ -26,7 +27,7 @@ const RegisterForm = () => {
         setToken(data.token);
         navigate('/login');
       } else {
-        alert(data.message);
+        toast.error(data.message);
       }
     } catch (error) {
       console.error('Error registering:', error);

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { toast } from "react-toastify";
 
 const AddExpensePage = () => {
   const { token } = useContext(AuthContext);
@@ -69,14 +70,14 @@ const AddExpensePage = () => {
 
       const data = await res.json();
       if (res.ok) {
-        alert("Expense added successfully!");
+        toast.success("Expense added successfully!");
         setDescription("");
         setAmount("");
         setPaidBy("");
         setSelectedGroupId("");
         setSplitBetween([]);
       } else {
-        alert(`Failed to add expense: ${data.message}`);
+        toast.error(`Failed to add expense: ${data.message}`);
       }
     } catch (error) {
       console.error("Failed to add expense", error);

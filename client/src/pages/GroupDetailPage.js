@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import { toast } from "react-toastify";
 
 const GroupDetailPage = () => {
   const { token } = useContext(AuthContext);
@@ -54,10 +55,10 @@ const GroupDetailPage = () => {
 
       const data = await res.json();
       if (res.ok) {
-        alert("Expense deleted");
+        toast.error("Expense deleted");
         fetchGroupDetails();
       } else {
-        alert(`Failed to delete: ${data.message}`);
+        toast.error(`Failed to delete: ${data.message}`);
       }
     } catch (err) {
       console.error("Delete error", err);
@@ -93,7 +94,7 @@ const GroupDetailPage = () => {
         );
         setCommentInputs((prev) => ({ ...prev, [expenseId]: "" }));
       } else {
-        alert(data.message);
+        toast.error(data.message);
       }
     } catch (err) {
       console.error("Failed to add comment", err);

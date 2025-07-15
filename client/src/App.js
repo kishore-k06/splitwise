@@ -10,6 +10,9 @@ import GroupDetailPage from "./pages/GroupDetailPage";
 import AddExpensePage from "./pages/AddExpensePage";
 import Navbar from "./components/Navbar";
 
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 function App() {
   return (
     <AuthProvider>
@@ -25,6 +28,7 @@ function App() {
           <Route path="/add-expense" element={<AddExpensePage />} />
         </Routes>
       </Router>
+      <ToastContainer position="top-center" autoClose={3000} theme="dark" />
     </AuthProvider>
   );
 }

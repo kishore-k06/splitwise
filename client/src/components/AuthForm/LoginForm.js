@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
+import { toast } from 'react-toastify';
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -26,7 +27,7 @@ const LoginForm = () => {
         setToken(data.token);
         navigate('/groups');
       } else {
-        alert(data.message);
+        toast.error(data.message);
       }
     } catch (error) {
       console.error('Error logging in:', error);

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { toast } from 'react-toastify';
 
 const GroupListPage = () => {
     const { token } = useContext(AuthContext);
@@ -42,9 +43,9 @@ const GroupListPage = () => {
             const data = await res.json();
             if (res.ok) {
                 setGroups(prev => prev.filter(group => group._id !== groupId));
-                alert("Group deleted successfully");
+                toast.success("Group deleted successfully");
             } else {
-                alert(data.message);
+                toast.error(data.message);
             }
         } catch (err) {
             console.error("Failed to delete group", err);
