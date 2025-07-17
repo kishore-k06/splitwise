@@ -92,7 +92,7 @@ const AddExpensePage = () => {
 
           {/* Group Selection */}
           <div className="mb-3">
-            <label className="form-label">Select Group:</label>
+            <label className="form-label text-light">Select Group:</label>
             <select
               className="form-select bg-dark text-light border-secondary"
               value={selectedGroupId}
